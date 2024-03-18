@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node index.js",
     "client": "cd client && npm run dev",
+    "initDb": "npx prisma generate",
     "dev": "concurrently -n \"server,client\" -c \"blue,green\" \"npm run server\" \"npm run client\"",
     "createUser": "node utilities/createUser.js"
   },

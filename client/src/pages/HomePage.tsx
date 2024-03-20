@@ -1,3 +1,4 @@
+// import TableToolbar from "@/components/TableToolbar";
 import Tasks from "./Tasks";
 import { Badge } from "@/components/ui/badge";
 
@@ -9,6 +10,7 @@ const HomePage = () => {
           Interview Project - Task Management
         </h1>
       </div>
+      {/* <TableToolbar /> */}
       <Tasks />
       <div className="flex space-x-4 items-center">
         <div className="flex w-full items-end space-x-4">

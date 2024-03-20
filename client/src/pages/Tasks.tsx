@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Badge } from "@/components/ui/badge";
 import PageSkeleton from "@/components/PageSkeleton";
+import TableToolbar from "@/components/TableToolbar";
 
 export type Task = {
   id: number;
@@ -72,6 +73,9 @@ const HeaderAction = ({
 const Tasks = () => {
   const { theme } = useTheme();
   const [data, setData] = useState<Task[]>([]);
+  const [filteredTasksData, setFilteredTasksData] = useState<Task[] | string>(
+    []
+  );
   const [isFetchingData, setIsFetchingData] = useState(true);
   const [activeSort, setActiveSort] = useState<SortType>({
     property: "id",
@@ -147,6 +151,7 @@ const Tasks = () => {
     setIsFetchingData(true);
     getMockTasks().then((data) => {
       setData(data);
+      setFilteredTasksData(data);
       setIsFetchingData(false);
     });
   }, []);
@@ -172,6 +177,13 @@ const Tasks = () => {
 
   return (
     <div className="h-full overflow-y-auto relative border rounded-md p-4">
+      <TableToolbar
+        tasksData={data}
+        setFilteredTasksData={setFilteredTasksData}
+      />
+      <pre className="mt-2 p-1 bg-yellow-400 w-full">
+        Search value: <b>{JSON.stringify(filteredTasksData, null, 2)}</b>
+      </pre>
       <Table>
         <TableCaption>Tasks</TableCaption>
         <TableHeader>

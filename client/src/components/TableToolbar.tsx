@@ -1,18 +1,12 @@
 import { Plus, Search, SearchIcon, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import React, { SetStateAction, useEffect, useState } from "react";
-import { Task } from "@/pages/Tasks";
+import { useContext, useEffect, useState } from "react";
+import { TasksContext } from "@/pages/HomePage";
 
-const TableToolbar = ({
-  tasksData,
-  setFilteredTasksData,
-  setCurrentTaskData,
-}: {
-  tasksData: Task[];
-  setFilteredTasksData: React.Dispatch<SetStateAction<Task[]>>;
-  setCurrentTaskData: React.Dispatch<SetStateAction<Task | null>>;
-}) => {
+const TableToolbar = () => {
+  const { tasksData, setFilteredTasksData, setCurrentTaskData } =
+    useContext(TasksContext);
   const [searchText, setSearchText] = useState("");
 
   const handleFilterTasks = () => {

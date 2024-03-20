@@ -17,12 +17,13 @@ import {
   Frown,
   Trash,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Badge } from "@/components/ui/badge";
 import PageSkeleton from "@/components/PageSkeleton";
 import TableToolbar from "@/components/TableToolbar";
 import TaskDialog from "@/components/TaskDialog";
+import { TasksContext } from "./HomePage";
 
 export type Task = {
   id: number;
@@ -79,14 +80,18 @@ const HeaderAction = ({
 
 const Tasks = () => {
   const { theme } = useTheme();
-  const [data, setData] = useState<Task[]>([]);
-  const [filteredTasksData, setFilteredTasksData] = useState<Task[]>([]);
+  const {
+    tasksData,
+    setTasksData,
+    setCurrentTaskData,
+    filteredTasksData,
+    setFilteredTasksData,
+  } = useContext(TasksContext);
   const [isFetchingData, setIsFetchingData] = useState(true);
   const [activeSort, setActiveSort] = useState<SortType>({
     property: "id",
     direction: "asc",
   });
-  const [currentTaskData, setCurrentTaskData] = useState<Task | null>(null);
 
   const tableColumnsDefinition = [
     { property: "id", title: "#", actionType: "number" },
@@ -114,27 +119,27 @@ const Tasks = () => {
   };
 
   const handleSubmit = (newTaskData: Task) => {
-    if (data.find((t) => t.id === newTaskData.id)) {
-      setData((old): Task[] =>
+    if (tasksData.find((t) => t.id === newTaskData.id)) {
+      setTasksData((old): Task[] =>
         old?.map(
           (task): Task => (task.id === newTaskData.id ? newTaskData : task)
         )
       );
     } else {
-      setData((old): Task[] => [...old, newTaskData]);
+      setTasksData((old): Task[] => [...old, newTaskData]);
     }
   };
 
   const handleDelete = (id: number) => {
-    setData((old): Task[] => old.filter((task) => task.id !== id));
+    setTasksData((old): Task[] => old.filter((task) => task.id !== id));
   };
 
   const sortTasksActions = (actionType: ActionType, property: keyof Task) => {
-    const dataToSort = [...data];
+    const dataToSort = [...tasksData];
 
     switch (actionType) {
       case "string":
-        setData(() =>
+        setTasksData(() =>
           dataToSort.sort((a: Task, b: Task) =>
             activeSort.direction === "asc"
               ? (a[property] as string).localeCompare(b[property] as string)
@@ -143,7 +148,7 @@ const Tasks = () => {
         );
         break;
       case "number":
-        setData(() =>
+        setTasksData(() =>
           dataToSort.sort(
             activeSort.direction === "asc"
               ? (a: Task, b: Task) =>
@@ -154,7 +159,7 @@ const Tasks = () => {
         );
         break;
       case "date":
-        setData(() =>
+        setTasksData(() =>
           dataToSort.sort((a: Task, b: Task) =>
             activeSort.direction === "asc"
               ? new Date(a[property] as string).getTime() -
@@ -172,13 +177,13 @@ const Tasks = () => {
   useEffect(() => {
     setIsFetchingData(true);
     getMockTasks().then((data) => {
-      setData(data);
+      setTasksData(data);
       setFilteredTasksData(data);
       setIsFetchingData(false);
     });
   }, []);
 
-  if (isFetchingData && !data.length) {
+  if (isFetchingData && !tasksData.length) {
     return (
       <PageContainer>
         <PageSkeleton />
@@ -186,7 +191,7 @@ const Tasks = () => {
     );
   }
 
-  if (!isFetchingData && !data.length) {
+  if (!isFetchingData && !tasksData.length) {
     return (
       <PageContainer>
         <div className="flex items-center">
@@ -199,11 +204,6 @@ const Tasks = () => {
 
   return (
     <PageContainer>
-      <TableToolbar
-        tasksData={data}
-        setFilteredTasksData={setFilteredTasksData}
-        setCurrentTaskData={setCurrentTaskData}
-      />
       <Table>
         <TableCaption>Tasks</TableCaption>
         <TableHeader>
@@ -283,11 +283,7 @@ const Tasks = () => {
           </TableRow>
         </TableFooter>
       </Table>
-      <TaskDialog
-        currentTaskData={currentTaskData}
-        setCurrentTaskData={setCurrentTaskData}
-        handleSubmit={handleSubmit}
-      />
+      <TaskDialog handleSubmit={handleSubmit} />
     </PageContainer>
   );
 };

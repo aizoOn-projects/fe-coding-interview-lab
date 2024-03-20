@@ -18,17 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { TasksContext } from "@/pages/HomePage";
 
 const TaskDialog = ({
-  currentTaskData,
-  setCurrentTaskData,
   handleSubmit,
 }: {
-  currentTaskData: Task | null;
-  setCurrentTaskData: React.Dispatch<React.SetStateAction<Task | null>>;
   handleSubmit: (task: Task) => void;
 }) => {
+  const { currentTaskData, setCurrentTaskData } = useContext(TasksContext);
   const [formData, setFormData] = useState(currentTaskData);
 
   const handleFormChange = (

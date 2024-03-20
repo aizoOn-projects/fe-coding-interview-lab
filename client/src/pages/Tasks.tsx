@@ -10,12 +10,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Frown } from "lucide-react";
+import {
+  ArrowDownNarrowWide,
+  ArrowUpNarrowWide,
+  Edit,
+  Frown,
+  Trash,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Badge } from "@/components/ui/badge";
 import PageSkeleton from "@/components/PageSkeleton";
 import TableToolbar from "@/components/TableToolbar";
+import TaskDialog from "@/components/TaskDialog";
 
 export type Task = {
   id: number;
@@ -79,6 +86,7 @@ const Tasks = () => {
     property: "id",
     direction: "asc",
   });
+  const [currentTaskData, setCurrentTaskData] = useState<Task | null>(null);
 
   const tableColumnsDefinition = [
     { property: "id", title: "#", actionType: "number" },
@@ -103,6 +111,10 @@ const Tasks = () => {
       default:
         return "";
     }
+  };
+
+  const handleSubmit = (newTaskData: Task) => {
+    console.log(newTaskData);
   };
 
   const sortTasksActions = (actionType: ActionType, property: keyof Task) => {
@@ -174,10 +186,11 @@ const Tasks = () => {
   }
 
   return (
-    <div className="h-full overflow-y-auto relative border rounded-md p-4">
+    <PageContainer>
       <TableToolbar
         tasksData={data}
         setFilteredTasksData={setFilteredTasksData}
+        setCurrentTaskData={setCurrentTaskData}
       />
       <Table>
         <TableCaption>Tasks</TableCaption>
@@ -203,6 +216,7 @@ const Tasks = () => {
                 activeSort={activeSort}
               />
             ))}
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -227,6 +241,27 @@ const Tasks = () => {
               <TableCell>
                 {new Date(task.updatedAt).toLocaleDateString("it-IT")}
               </TableCell>
+              <TableCell className="space-x-2 flex">
+                <Button
+                  variant={"secondary"}
+                  size="icon"
+                  onClick={() => {
+                    console.log("%cEdit task: ", "color: yellow", task);
+                    setCurrentTaskData(task);
+                  }}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={"secondary"}
+                  size="icon"
+                  onClick={() =>
+                    console.log("%cDelete task: ", "color: red", task)
+                  }
+                >
+                  <Trash className="w-4 h-4" />
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -239,7 +274,12 @@ const Tasks = () => {
           </TableRow>
         </TableFooter>
       </Table>
-    </div>
+      <TaskDialog
+        currentTaskData={currentTaskData}
+        setCurrentTaskData={setCurrentTaskData}
+        handleSubmit={handleSubmit}
+      />
+    </PageContainer>
   );
 };
 

@@ -7,9 +7,11 @@ import { Task } from "@/pages/Tasks";
 const TableToolbar = ({
   tasksData,
   setFilteredTasksData,
+  setCurrentTaskData,
 }: {
   tasksData: Task[];
   setFilteredTasksData: React.Dispatch<SetStateAction<Task[]>>;
+  setCurrentTaskData: React.Dispatch<SetStateAction<Task | null>>;
 }) => {
   const [searchText, setSearchText] = useState("");
 
@@ -53,7 +55,9 @@ const TableToolbar = ({
       </Button>
       <Button
         variant={"default"}
-        onClick={() => console.log("%cAdd Task", "color: green")}
+        onClick={() => {
+          console.log("%cAdd Task", "color: green");
+        }}
       >
         Add Task <Plus className="ml-2 w-4 h-4" />
       </Button>

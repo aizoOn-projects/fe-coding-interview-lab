@@ -239,7 +239,7 @@ const Tasks = () => {
           <TableRow>
             <TableCell colSpan={3}>Total Tasks </TableCell>
             <TableCell className="text-right" colSpan={5}>
-              {data.length}
+              {filteredTasksData.length}
             </TableCell>
           </TableRow>
         </TableFooter>

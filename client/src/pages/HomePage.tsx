@@ -10,7 +10,6 @@ const HomePage = () => {
           Interview Project - Task Management
         </h1>
       </div>
-      {/* <TableToolbar /> */}
       <Tasks />
       <div className="flex space-x-4 items-center">
         <div className="flex w-full items-end space-x-4">

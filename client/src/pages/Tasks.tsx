@@ -1,4 +1,4 @@
-// import getMockTasks from "@/api/getMockTasks";
+import getMockTasks from "@/api/getMockTasks";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -11,9 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Frown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Badge } from "@/components/ui/badge";
+import PageSkeleton from "@/components/PageSkeleton";
 
 export type Task = {
   id: number;
@@ -43,8 +44,8 @@ const HeaderAction = ({ title }: { title: string }) => {
 
 const Tasks = () => {
   const { theme } = useTheme();
-  const [data, setData] = useState<Task[] | null>(null);
-  false;
+  const [data, setData] = useState<Task[]>([]);
+  const [isFetchingData, setIsFetchingData] = useState(true);
 
   const tableColumnsDefinition = [
     { property: "id", title: "#", actionType: "number" },
@@ -71,7 +72,23 @@ const Tasks = () => {
     }
   };
 
-  if (!data) {
+  useEffect(() => {
+    setIsFetchingData(true);
+    getMockTasks().then((data) => {
+      setData(data);
+      setIsFetchingData(false);
+    });
+  }, []);
+
+  if (isFetchingData && !data.length) {
+    return (
+      <PageContainer>
+        <PageSkeleton />
+      </PageContainer>
+    );
+  }
+
+  if (!isFetchingData && !data.length) {
     return (
       <PageContainer>
         <div className="flex items-center">

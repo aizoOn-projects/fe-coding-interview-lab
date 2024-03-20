@@ -56,7 +56,15 @@ const TableToolbar = ({
       <Button
         variant={"default"}
         onClick={() => {
-          console.log("%cAdd Task", "color: green");
+          setCurrentTaskData({
+            id: Math.max(...tasksData.map((task) => task.id)) + 1,
+            title: "",
+            description: "",
+            status: "new",
+            priority: "1",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
         }}
       >
         Add Task <Plus className="ml-2 w-4 h-4" />

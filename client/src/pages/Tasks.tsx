@@ -114,7 +114,19 @@ const Tasks = () => {
   };
 
   const handleSubmit = (newTaskData: Task) => {
-    console.log(newTaskData);
+    if (data.find((t) => t.id === newTaskData.id)) {
+      setData((old): Task[] =>
+        old?.map(
+          (task): Task => (task.id === newTaskData.id ? newTaskData : task)
+        )
+      );
+    } else {
+      setData((old): Task[] => [...old, newTaskData]);
+    }
+  };
+
+  const handleDelete = (id: number) => {
+    setData((old): Task[] => old.filter((task) => task.id !== id));
   };
 
   const sortTasksActions = (actionType: ActionType, property: keyof Task) => {
@@ -246,7 +258,6 @@ const Tasks = () => {
                   variant={"secondary"}
                   size="icon"
                   onClick={() => {
-                    console.log("%cEdit task: ", "color: yellow", task);
                     setCurrentTaskData(task);
                   }}
                 >
@@ -255,9 +266,7 @@ const Tasks = () => {
                 <Button
                   variant={"secondary"}
                   size="icon"
-                  onClick={() =>
-                    console.log("%cDelete task: ", "color: red", task)
-                  }
+                  onClick={() => handleDelete(task.id)}
                 >
                   <Trash className="w-4 h-4" />
                 </Button>

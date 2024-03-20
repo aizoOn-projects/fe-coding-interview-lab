@@ -23,8 +23,8 @@ import React, { useEffect, useState } from "react";
 const TaskDialog = ({
   currentTaskData,
   setCurrentTaskData,
-}: // handleSubmit,
-{
+  handleSubmit,
+}: {
   currentTaskData: Task | null;
   setCurrentTaskData: React.Dispatch<React.SetStateAction<Task | null>>;
   handleSubmit: (task: Task) => void;
@@ -143,7 +143,10 @@ const TaskDialog = ({
             variant="default"
             disabled={!formData?.title || !formData?.description}
             onClick={() => {
-              console.log("Submitting the task data: ", formData);
+              handleSubmit({
+                ...formData!,
+                updatedAt: new Date(),
+              });
               setFormData(null);
               setCurrentTaskData(null);
             }}

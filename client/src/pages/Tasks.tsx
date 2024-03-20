@@ -104,17 +104,39 @@ const Tasks = () => {
   };
 
   const sortTasksActions = (actionType: ActionType, property: keyof Task) => {
-    // const dataToSort = [...data];
+    const dataToSort = [...data];
 
     switch (actionType) {
       case "string":
-        console.log("sorting by string for: ", property);
+        setData(() =>
+          dataToSort.sort((a: Task, b: Task) =>
+            activeSort.direction === "asc"
+              ? (a[property] as string).localeCompare(b[property] as string)
+              : (b[property] as string).localeCompare(a[property] as string)
+          )
+        );
         break;
       case "number":
-        console.log("sorting by number for: ", property);
+        setData(() =>
+          dataToSort.sort(
+            activeSort.direction === "asc"
+              ? (a: Task, b: Task) =>
+                  (a[property] as number) - (b[property] as number)
+              : (a: Task, b: Task) =>
+                  (b[property] as number) - (a[property] as number)
+          )
+        );
         break;
       case "date":
-        console.log("sorting by date for", property);
+        setData(() =>
+          dataToSort.sort((a: Task, b: Task) =>
+            activeSort.direction === "asc"
+              ? new Date(a[property] as string).getTime() -
+                new Date(b[property] as string).getTime()
+              : new Date(b[property] as string).getTime() -
+                new Date(a[property] as string).getTime()
+          )
+        );
         break;
       default:
         return;
@@ -160,13 +182,16 @@ const Tasks = () => {
                 title={column.title}
                 property={column.property}
                 callback={() => {
-                  // 1. Sort the tasks
                   sortTasksActions(
                     column.actionType as ActionType,
                     column.property as keyof Task
                   );
-                  // 2. Set an activeSort flag state
-                  setActiveSort({ property: "id", direction: "asc" });
+                  setActiveSort(
+                    (old): SortType => ({
+                      property: column.property,
+                      direction: old.direction === "asc" ? "desc" : "asc",
+                    })
+                  );
                 }}
                 activeSort={activeSort}
               />

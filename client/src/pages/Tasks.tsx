@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Frown } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, Frown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +26,12 @@ export type Task = {
   updatedAt: string | Date;
 };
 
+type ActionType = "string" | "number" | "date";
+type SortType = {
+  property: string;
+  direction: "asc" | "desc";
+};
+
 const PageContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="h-full overflow-y-auto relative border rounded-md p-4">
@@ -34,10 +40,31 @@ const PageContainer = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const HeaderAction = ({ title }: { title: string }) => {
+const HeaderAction = ({
+  title,
+  property,
+  callback,
+  activeSort,
+}: {
+  title: string;
+  property: string;
+  callback: () => void;
+  activeSort: SortType;
+}) => {
   return (
     <TableHead>
-      <Button variant={"ghost"}>{title}</Button>
+      <Button
+        variant={"ghost"}
+        onClick={callback}
+        className={activeSort.property === property ? "text-blue-600" : ""}
+      >
+        {title}
+        {activeSort.property === property && activeSort.direction === "desc" ? (
+          <ArrowDownNarrowWide className="ml-2 w-4 h-4" />
+        ) : activeSort.property === property ? (
+          <ArrowUpNarrowWide className="ml-2 w-4 h-4" />
+        ) : null}
+      </Button>
     </TableHead>
   );
 };
@@ -46,6 +73,10 @@ const Tasks = () => {
   const { theme } = useTheme();
   const [data, setData] = useState<Task[]>([]);
   const [isFetchingData, setIsFetchingData] = useState(true);
+  const [activeSort, setActiveSort] = useState<SortType>({
+    property: "id",
+    direction: "asc",
+  });
 
   const tableColumnsDefinition = [
     { property: "id", title: "#", actionType: "number" },
@@ -69,6 +100,24 @@ const Tasks = () => {
         return theme === "light" ? "bg-yellow-300" : "bg-yellow-900";
       default:
         return "";
+    }
+  };
+
+  const sortTasksActions = (actionType: ActionType, property: keyof Task) => {
+    // const dataToSort = [...data];
+
+    switch (actionType) {
+      case "string":
+        console.log("sorting by string for: ", property);
+        break;
+      case "number":
+        console.log("sorting by number for: ", property);
+        break;
+      case "date":
+        console.log("sorting by date for", property);
+        break;
+      default:
+        return;
     }
   };
 
@@ -106,7 +155,21 @@ const Tasks = () => {
         <TableHeader>
           <TableRow>
             {tableColumnsDefinition.map((column) => (
-              <HeaderAction key={column.title} title={column.title} />
+              <HeaderAction
+                key={column.title}
+                title={column.title}
+                property={column.property}
+                callback={() => {
+                  // 1. Sort the tasks
+                  sortTasksActions(
+                    column.actionType as ActionType,
+                    column.property as keyof Task
+                  );
+                  // 2. Set an activeSort flag state
+                  setActiveSort({ property: "id", direction: "asc" });
+                }}
+                activeSort={activeSort}
+              />
             ))}
           </TableRow>
         </TableHeader>

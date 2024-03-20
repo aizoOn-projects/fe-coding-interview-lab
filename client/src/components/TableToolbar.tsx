@@ -9,13 +9,16 @@ const TableToolbar = ({
   setFilteredTasksData,
 }: {
   tasksData: Task[];
-  setFilteredTasksData: React.Dispatch<SetStateAction<Task[] | string>>;
+  setFilteredTasksData: React.Dispatch<SetStateAction<Task[]>>;
 }) => {
   const [searchText, setSearchText] = useState("");
 
   const handleFilterTasks = () => {
     const searchValue = searchText.toLocaleLowerCase().trim();
-    setFilteredTasksData(searchValue);
+    const newTasksData = tasksData.filter((task) =>
+      JSON.stringify(task).trim().toLocaleLowerCase().includes(searchValue)
+    );
+    setFilteredTasksData(newTasksData);
   };
 
   useEffect(() => {

@@ -73,9 +73,7 @@ const HeaderAction = ({
 const Tasks = () => {
   const { theme } = useTheme();
   const [data, setData] = useState<Task[]>([]);
-  const [filteredTasksData, setFilteredTasksData] = useState<Task[] | string>(
-    []
-  );
+  const [filteredTasksData, setFilteredTasksData] = useState<Task[]>([]);
   const [isFetchingData, setIsFetchingData] = useState(true);
   const [activeSort, setActiveSort] = useState<SortType>({
     property: "id",
@@ -181,9 +179,6 @@ const Tasks = () => {
         tasksData={data}
         setFilteredTasksData={setFilteredTasksData}
       />
-      <pre className="mt-2 p-1 bg-yellow-400 w-full">
-        Search value: <b>{JSON.stringify(filteredTasksData, null, 2)}</b>
-      </pre>
       <Table>
         <TableCaption>Tasks</TableCaption>
         <TableHeader>
@@ -211,7 +206,7 @@ const Tasks = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((task: Task) => (
+          {filteredTasksData?.map((task: Task) => (
             <TableRow key={task.id}>
               <TableCell className="font-medium">{task.id}</TableCell>
               <TableCell className="font-medium">{task.title}</TableCell>

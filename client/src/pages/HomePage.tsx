@@ -3,6 +3,7 @@ import DashboardSection from "./DashboardSection";
 import Tasks, { Task } from "./Tasks";
 import { Badge } from "@/components/ui/badge";
 import TableToolbar from "@/components/TableToolbar";
+import { ModeToggle } from "@/components/ModeToggle";
 
 type TasksContextType = {
   tasksData: Task[];
@@ -44,6 +45,7 @@ const HomePage = () => {
           <h1 className="text-2xl font-extralight">
             Interview Project - Task Management
           </h1>
+          <ModeToggle />
         </div>
         <DashboardSection />
         <TableToolbar />
